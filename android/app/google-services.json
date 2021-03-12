@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "618003044463",
+    "project_id": "medicines-48b20",
+    "storage_bucket": "medicines-48b20.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618003044463:android:58c0e3794aea3e58f8559a",
+        "android_client_info": {
+          "package_name": "com.example.time_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618003044463-3qb196ab9lbvv78hic793squkon9tmia.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.time_tracker",
+            "certificate_hash": "9b9b1092b2ee7511a5a13bbe506df788cb1f3cae"
+          }
+        },
+        {
+          "client_id": "618003044463-ip3rh4967u5nbp9ni063m2pqis84t9um.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNqjzcTR_JKY8MHz8UAvLyF42jIcJ7Afc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618003044463-ip3rh4967u5nbp9ni063m2pqis84t9um.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618003044463:android:0e6c64156959d08cf8559a",
+        "android_client_info": {
+          "package_name": "com.medhat.Medicines"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618003044463-ip3rh4967u5nbp9ni063m2pqis84t9um.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNqjzcTR_JKY8MHz8UAvLyF42jIcJ7Afc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618003044463-ip3rh4967u5nbp9ni063m2pqis84t9um.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
