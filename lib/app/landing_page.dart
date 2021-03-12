@@ -4,45 +4,34 @@ import 'package:time_tracker/services/auth.dart';
 import './sign_in/sign_in_page.dart';
 import './home_page.dart';
 
-class LandingPage extends StatefulWidget {
+class LandingPage extends StatelessWidget {
   final AuthBase auth;
 
   const LandingPage({Key key, @required this.auth}) : super(key: key);
-  @override
-  _LandingPageState createState() => _LandingPageState();
-}
-
-class _LandingPageState extends State<LandingPage> {
-  User _user;
-  void _updateUser(User user) {
-    setState(() {
-      _user = user;
-    });
-    print('User id : ${user?.uid}');
-  }
-
-  /*void signOut() {
-    setState(() {
-      _user = null;
-    });
-  }*/
-
-  @override
-  void initState() {
-    super.initState();
-    _user = widget.auth.currentUser;
-  }
 
   @override
   Widget build(BuildContext context) {
-    return _user == null
-        ? SignInPage(
-            onSignIn: _updateUser,
-            auth: widget.auth,
-          )
-        : HomePage(
-            onSignOut: () => _updateUser(null),
-            auth: widget.auth,
-          );
+    return StreamBuilder<User>(
+      stream: auth.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          final user = snapshot.data;
+
+          return user == null
+              ? SignInPage(
+                  auth: auth,
+                )
+              : HomePage(
+                  auth: auth,
+                );
+        }
+
+        return Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
   }
 }
