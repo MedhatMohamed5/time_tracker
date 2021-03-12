@@ -114,6 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
 */
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import './services/auth.dart';
 // import './app/sign_in/sign_in_page.dart';
 import './app/landing_page.dart';
 
@@ -134,7 +135,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
-      home: LandingPage(),
+      home: LandingPage(
+        auth: Auth(),
+      ),
     );
   }
 }
