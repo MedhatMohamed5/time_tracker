@@ -114,7 +114,8 @@ class _MyHomePageState extends State<MyHomePage> {
 */
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import './app/sign_in/sign_in_page.dart';
+// import './app/sign_in/sign_in_page.dart';
+import './app/landing_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -133,7 +134,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
-      home: SignInPage(),
+      home: LandingPage(),
     );
   }
 }
