@@ -1,6 +1,7 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:time_tracker/services/auth.dart';
+import '../common_widgets/show_alert_dialog.dart';
+import '../services/auth.dart';
 
 class HomePage extends StatelessWidget {
   final AuthBase auth;
@@ -14,6 +15,17 @@ class HomePage extends StatelessWidget {
     }
   }
 
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final didRequestSignOut = await showAlertDialog(
+      context,
+      title: 'Sign out',
+      content: 'Are you sure?',
+      defaultActionText: 'Sign out',
+      cancelActionText: 'Cancel',
+    );
+    if (didRequestSignOut) _signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +34,7 @@ class HomePage extends StatelessWidget {
         centerTitle: true,
         actions: [
           TextButton(
-            onPressed: _signOut,
+            onPressed: () => _confirmSignOut(context),
             child: Text(
               'Logout',
               style: TextStyle(

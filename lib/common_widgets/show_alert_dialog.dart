@@ -8,15 +8,22 @@ Future<bool> showAlertDialog(
   @required String title,
   @required String content,
   @required String defaultActionText,
+  String cancelActionText,
 }) {
   if (Platform.isIOS) {
     return showCupertinoDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => CupertinoAlertDialog(
         title: Text(title),
         content: Text(content),
         actions: [
-          TextButton(
+          if (cancelActionText != null)
+            CupertinoDialogAction(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(cancelActionText),
+            ),
+          CupertinoDialogAction(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(defaultActionText),
           ),
@@ -26,10 +33,16 @@ Future<bool> showAlertDialog(
   } else {
     return showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Text(title),
         content: Text(content),
         actions: [
+          if (cancelActionText != null)
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(cancelActionText),
+            ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(defaultActionText),

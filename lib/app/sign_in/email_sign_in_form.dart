@@ -1,8 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:time_tracker/common_widgets/show_alert_dialog.dart';
+import '../../common_widgets/show_alert_dialog.dart';
 import './validators.dart';
 import '../../services/auth.dart';
 import '../../common_widgets/form_submit_button.dart';
