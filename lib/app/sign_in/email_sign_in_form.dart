@@ -58,13 +58,14 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         ? 'Need an account? Register'
         : 'Have an accoun? Sign in';
 
+    bool enableSubmit = _email.isNotEmpty && _password.length > 5;
     return [
       _buildEmailTextField(),
       SizedBox(height: 8),
       _buildPasswordTextField(),
       SizedBox(height: 8),
       FormSubmitButton(
-        onPressed: _submit,
+        onPressed: enableSubmit ? _submit : null,
         text: primaryText,
       ),
       SizedBox(height: 8),
@@ -85,6 +86,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       ),
       onEditingComplete: _submit,
       obscureText: true,
+      onChanged: (password) => _updateState(),
     );
   }
 
@@ -99,7 +101,12 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         hintText: 'time_tracker@email.com',
       ),
       onEditingComplete: _emailEditingComplete,
+      onChanged: (email) => _updateState(),
     );
+  }
+
+  _updateState() {
+    setState(() {});
   }
 
   @override
