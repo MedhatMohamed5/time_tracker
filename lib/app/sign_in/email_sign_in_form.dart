@@ -16,6 +16,8 @@ class EmailSignInForm extends StatefulWidget {
 class _EmailSignInFormState extends State<EmailSignInForm> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
 
   String get _email => emailController.text;
   String get _password => passwordController.text;
@@ -32,6 +34,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  _emailEditingComplete() {
+    FocusScope.of(context).requestFocus(_passwordFocusNode);
   }
 
   void _toggleFormType() {
@@ -53,21 +59,9 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         : 'Have an accoun? Sign in';
 
     return [
-      TextField(
-        controller: emailController,
-        decoration: InputDecoration(
-          labelText: 'Email',
-          hintText: 'time_tracker@email.com',
-        ),
-      ),
+      _buildEmailTextField(),
       SizedBox(height: 8),
-      TextField(
-        controller: passwordController,
-        decoration: InputDecoration(
-          labelText: 'Password',
-        ),
-        obscureText: true,
-      ),
+      _buildPasswordTextField(),
       SizedBox(height: 8),
       FormSubmitButton(
         onPressed: _submit,
@@ -79,6 +73,33 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         onPressed: _toggleFormType,
       ),
     ];
+  }
+
+  TextField _buildPasswordTextField() {
+    return TextField(
+      controller: passwordController,
+      focusNode: _passwordFocusNode,
+      textInputAction: TextInputAction.done,
+      decoration: InputDecoration(
+        labelText: 'Password',
+      ),
+      onEditingComplete: _submit,
+      obscureText: true,
+    );
+  }
+
+  TextField _buildEmailTextField() {
+    return TextField(
+      controller: emailController,
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      focusNode: _emailFocusNode,
+      decoration: InputDecoration(
+        labelText: 'Email',
+        hintText: 'time_tracker@email.com',
+      ),
+      onEditingComplete: _emailEditingComplete,
+    );
   }
 
   @override
