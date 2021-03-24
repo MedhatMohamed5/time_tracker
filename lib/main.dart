@@ -114,9 +114,8 @@ class _MyHomePageState extends State<MyHomePage> {
 */
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import './services/auth_provider.dart';
+import 'package:provider/provider.dart';
 import './services/auth.dart';
-// import './app/sign_in/sign_in_page.dart';
 import './app/landing_page.dart';
 
 Future<void> main() async {
@@ -130,8 +129,8 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AuthProvider(
-      authBase: Auth(),
+    return Provider<AuthBase>(
+      create: (context) => Auth(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Time Tracker',

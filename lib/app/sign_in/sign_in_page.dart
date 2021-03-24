@@ -1,8 +1,8 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../services/auth_provider.dart';
+import 'package:provider/provider.dart';
 
-// import '../../services/auth.dart';
+import '../../services/auth.dart';
 
 import './sign_in_button.dart';
 import './email_sign_in_page.dart';
@@ -99,7 +99,8 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
-      final auth = AuthProvider.of(context);
+      final auth = Provider.of<AuthBase>(context, listen: false);
+
       await auth.signInWithGoogle();
     } catch (e) {
       print(e.toString());
@@ -108,7 +109,8 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
-      final auth = AuthProvider.of(context);
+      final auth = Provider.of<AuthBase>(context, listen: false);
+
       await auth.signInWithFacebook();
     } catch (e) {
       print(e.toString());
@@ -117,7 +119,8 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
-      final auth = AuthProvider.of(context);
+      final auth = Provider.of<AuthBase>(context, listen: false);
+
       await auth.signInAnonymously();
     } catch (e) {
       print(e.toString());
