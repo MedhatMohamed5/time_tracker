@@ -10,7 +10,14 @@ import './sign_in_button.dart';
 import './email_sign_in_page.dart';
 import './social_sign_in_button.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,18 +38,14 @@ class SignInPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'Sign in',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w600,
-            ),
+          SizedBox(
+            child: _buildHeader(),
+            height: 50,
           ),
           SizedBox(height: 48),
           SocialSignInButton(
             assetName: 'images/google-logo.png',
-            onPressed: () => _signInWithGoogle(context),
+            onPressed: _isLoading ? null : () => _signInWithGoogle(context),
             text: 'Sign in with Google',
             textColor: Colors.black87,
             color: Colors.white,
@@ -55,7 +58,7 @@ class SignInPage extends StatelessWidget {
             text: 'Sign in with Facebook',
             textColor: Colors.white,
             color: Color(0xFF334D92), //Colors.blue,
-            onPressed: () => _signInWithFacebook(context),
+            onPressed: _isLoading ? null : () => _signInWithFacebook(context),
           ),
           SizedBox(
             height: 8,
@@ -64,7 +67,7 @@ class SignInPage extends StatelessWidget {
             text: 'Sign in with Email',
             textColor: Colors.white,
             color: Colors.teal.shade700, //Colors.blue,
-            onPressed: () => _signInWithEmail(context),
+            onPressed: _isLoading ? null : () => _signInWithEmail(context),
           ),
           SizedBox(
             height: 8,
@@ -83,7 +86,7 @@ class SignInPage extends StatelessWidget {
             text: 'Go Anonymous',
             textColor: Colors.black87,
             color: Colors.lime.shade300, //Colors.blue,
-            onPressed: () => _signInAnonymously(context),
+            onPressed: _isLoading ? null : () => _signInAnonymously(context),
           ),
         ],
       ),
@@ -99,6 +102,12 @@ class SignInPage extends StatelessWidget {
     );
   }
 
+  void _updateLoadingState() {
+    setState(() {
+      _isLoading = !_isLoading;
+    });
+  }
+
   void _showSignInError(BuildContext context, Exception exception) {
     if (exception is FirebaseException &&
         exception.code != 'ERROR_ABORTED_BY_USER')
@@ -110,6 +119,7 @@ class SignInPage extends StatelessWidget {
   }
 
   Future<void> _signInWithGoogle(BuildContext context) async {
+    _updateLoadingState();
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
 
@@ -117,10 +127,13 @@ class SignInPage extends StatelessWidget {
     } catch (e) {
       print(e.toString());
       _showSignInError(context, e);
+    } finally {
+      _updateLoadingState();
     }
   }
 
   Future<void> _signInWithFacebook(BuildContext context) async {
+    _updateLoadingState();
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
 
@@ -128,10 +141,13 @@ class SignInPage extends StatelessWidget {
     } catch (e) {
       _showSignInError(context, e);
       print(e.toString());
+    } finally {
+      _updateLoadingState();
     }
   }
 
   Future<void> _signInAnonymously(BuildContext context) async {
+    _updateLoadingState();
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
 
@@ -139,6 +155,23 @@ class SignInPage extends StatelessWidget {
     } catch (e) {
       _showSignInError(context, e);
       print(e.toString());
+    } finally {
+      _updateLoadingState();
     }
+  }
+
+  Widget _buildHeader() {
+    return _isLoading
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Text(
+            'Sign in',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w600,
+            ),
+          );
   }
 }
