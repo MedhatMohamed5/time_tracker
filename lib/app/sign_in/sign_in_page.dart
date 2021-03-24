@@ -11,24 +11,23 @@ import './sign_in_button.dart';
 import './email_sign_in_page.dart';
 import './social_sign_in_button.dart';
 
-class SignInPage extends StatefulWidget {
+class SignInPage extends StatelessWidget {
+  final SignInBloc bloc;
+
+  const SignInPage({Key key, @required this.bloc}) : super(key: key);
+
   static Widget create(BuildContext context) {
     return Provider<SignInBloc>(
       create: (_) => SignInBloc(),
-      child: SignInPage(),
+      child: Consumer<SignInBloc>(
+        builder: (_, bloc, __) => SignInPage(bloc: bloc),
+      ),
     );
   }
 
   @override
-  _SignInPageState createState() => _SignInPageState();
-}
-
-class _SignInPageState extends State<SignInPage> {
-  // bool _isLoading = false;
-
-  @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<SignInBloc>(context, listen: false);
+    // final bloc = Provider.of<SignInBloc>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -117,7 +116,7 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void _updateLoadingState(bool value) {
-    final bloc = Provider.of<SignInBloc>(context, listen: false);
+    // final bloc = Provider.of<SignInBloc>(context, listen: false);
     bloc.setIsLoading(value);
   }
 
