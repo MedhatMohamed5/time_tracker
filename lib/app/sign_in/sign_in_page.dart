@@ -17,8 +17,10 @@ class SignInPage extends StatelessWidget {
   const SignInPage({Key key, @required this.bloc}) : super(key: key);
 
   static Widget create(BuildContext context) {
+    final auth = Provider.of<AuthBase>(context, listen: false);
     return Provider<SignInBloc>(
-      create: (_) => SignInBloc(),
+      create: (_) => SignInBloc(auth: auth),
+      dispose: (_, bloc) => bloc.dispose(),
       child: Consumer<SignInBloc>(
         builder: (_, bloc, __) => SignInPage(bloc: bloc),
       ),
@@ -115,11 +117,6 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  void _updateLoadingState(bool value) {
-    // final bloc = Provider.of<SignInBloc>(context, listen: false);
-    bloc.setIsLoading(value);
-  }
-
   void _showSignInError(BuildContext context, Exception exception) {
     if (exception is FirebaseException &&
         exception.code != 'ERROR_ABORTED_BY_USER')
@@ -131,44 +128,29 @@ class SignInPage extends StatelessWidget {
   }
 
   Future<void> _signInWithGoogle(BuildContext context) async {
-    _updateLoadingState(true);
     try {
-      final auth = Provider.of<AuthBase>(context, listen: false);
-
-      await auth.signInWithGoogle();
+      await bloc.signInWithGoogle();
     } catch (e) {
       print(e.toString());
       _showSignInError(context, e);
-    } finally {
-      _updateLoadingState(false);
     }
   }
 
   Future<void> _signInWithFacebook(BuildContext context) async {
-    _updateLoadingState(true);
     try {
-      final auth = Provider.of<AuthBase>(context, listen: false);
-
-      await auth.signInWithFacebook();
+      await bloc.signInWithFacebook();
     } catch (e) {
       _showSignInError(context, e);
       print(e.toString());
-    } finally {
-      _updateLoadingState(false);
     }
   }
 
   Future<void> _signInAnonymously(BuildContext context) async {
-    _updateLoadingState(true);
     try {
-      final auth = Provider.of<AuthBase>(context, listen: false);
-
-      await auth.signInAnonymously();
+      await bloc.signInAnonymously();
     } catch (e) {
       _showSignInError(context, e);
       print(e.toString());
-    } finally {
-      _updateLoadingState(false);
     }
   }
 
