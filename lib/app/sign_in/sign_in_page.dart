@@ -13,16 +13,25 @@ import './social_sign_in_button.dart';
 
 class SignInPage extends StatelessWidget {
   final SignInBloc bloc;
-
-  const SignInPage({Key key, @required this.bloc}) : super(key: key);
+  final bool isLoading;
+  const SignInPage({Key key, @required this.bloc, @required this.isLoading})
+      : super(key: key);
 
   static Widget create(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
-    return Provider<SignInBloc>(
-      create: (_) => SignInBloc(auth: auth),
-      dispose: (_, bloc) => bloc.dispose(),
-      child: Consumer<SignInBloc>(
-        builder: (_, bloc, __) => SignInPage(bloc: bloc),
+    return ChangeNotifierProvider<ValueNotifier<bool>>(
+      create: (_) => ValueNotifier<bool>(false),
+      child: Consumer<ValueNotifier<bool>>(
+        builder: (_, isLoading, __) => Provider<SignInBloc>(
+          create: (_) => SignInBloc(auth: auth, isLoading: isLoading),
+          // dispose: (_, bloc) => bloc.dispose(),
+          child: Consumer<SignInBloc>(
+            builder: (_, bloc, __) => SignInPage(
+              bloc: bloc,
+              isLoading: isLoading.value,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -36,17 +45,12 @@ class SignInPage extends StatelessWidget {
         title: Text('Time Tracker'),
         centerTitle: true,
       ),
-      body: StreamBuilder<bool>(
-          stream: bloc.isLoadingStream,
-          initialData: false,
-          builder: (context, snapshot) {
-            return _buildContent(context, snapshot.data);
-          }),
+      body: _buildContent(context),
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent(BuildContext context, bool isLoading) {
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -54,7 +58,7 @@ class SignInPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            child: _buildHeader(isLoading),
+            child: _buildHeader(),
             height: 50,
           ),
           SizedBox(height: 48),
@@ -154,7 +158,7 @@ class SignInPage extends StatelessWidget {
     }
   }
 
-  Widget _buildHeader(bool isLoading) {
+  Widget _buildHeader() {
     return isLoading
         ? Center(
             child: CircularProgressIndicator(),
