@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker/services/database.dart';
 import '../services/auth.dart';
 import './sign_in/sign_in_page.dart';
-import './home_page.dart';
+import './home/jobs_page.dart';
 
 class LandingPage extends StatelessWidget {
   @override
@@ -15,7 +16,12 @@ class LandingPage extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active) {
           final user = snapshot.data;
 
-          return user == null ? SignInPage.create(context) : HomePage();
+          return user == null
+              ? SignInPage.create(context)
+              : Provider<Database>(
+                  create: (_) => FirestoreDatabase(uid: user.uid),
+                  child: JobsPage(),
+                );
         }
 
         return Scaffold(

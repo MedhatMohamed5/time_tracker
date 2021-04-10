@@ -16,5 +16,6 @@ Future<void> showExceptionAlertDialog(
 
 String _message(Exception exception) {
   if (exception is FirebaseAuthException) return exception.message;
+  if (exception is FirebaseException) return exception.message;
   return exception.toString();
 }
