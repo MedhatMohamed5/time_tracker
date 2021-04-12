@@ -1,6 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker/app/home/models/job.dart';
+import 'package:time_tracker/common_widgets/show_alert_dialog.dart';
+import 'package:time_tracker/common_widgets/show_exception_alert_dialog.dart';
 import 'package:time_tracker/services/database.dart';
 
 class AddJobPage extends StatefulWidget {
@@ -41,10 +44,30 @@ class _AddJobPageState extends State<AddJobPage> {
 
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
-      print('form saved : $_name $_ratePerHour');
-      final job = Job(name: _name, ratePerHour: _ratePerHour);
-      await widget.database.createJob(job);
-      Navigator.of(context).pop();
+      try {
+        print('form saved : $_name $_ratePerHour');
+        final jobs = await widget.database.jobsStream().first;
+        final allNames = jobs.map((job) => job.name).toList();
+
+        if (allNames.contains(_name)) {
+          showAlertDialog(
+            context,
+            title: 'Name is already used',
+            content: 'Please choose a different name',
+            defaultActionText: 'Ok',
+          );
+        } else {
+          final job = Job(name: _name, ratePerHour: _ratePerHour);
+          await widget.database.createJob(job);
+          Navigator.of(context).pop();
+        }
+      } on FirebaseException catch (e) {
+        showExceptionAlertDialog(
+          context,
+          title: 'Operation failed',
+          exception: e,
+        );
+      }
     }
   }
 
@@ -103,13 +126,13 @@ class _AddJobPageState extends State<AddJobPage> {
     return [
       TextFormField(
         decoration: InputDecoration(labelText: 'Job name'),
+        textCapitalization: TextCapitalization.sentences,
         onSaved: (value) => _name = value.trim(),
         validator: (value) => value.isNotEmpty ? null : "Name cannot be empty",
       ),
       TextFormField(
         decoration: InputDecoration(labelText: 'Rate per hour'),
-        onSaved: (value) =>
-            _ratePerHour = int.parse(value.isNotEmpty ? value : '0'),
+        onSaved: (value) => _ratePerHour = int.tryParse(value) ?? 0,
         validator: (value) => value.isEmpty
             ? 'Rate per hour cannot be empty'
             : int.parse(value) <= 0
