@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:time_tracker/app/home/jobs/add_job_page.dart';
+import 'package:time_tracker/app/home/jobs/edit_job_page.dart';
 import 'package:time_tracker/app/home/jobs/job_list_tile.dart';
 import 'package:time_tracker/common_widgets/show_exception_alert_dialog.dart';
 import 'package:time_tracker/services/auth.dart';
@@ -56,22 +56,9 @@ class JobsPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         tooltip: 'Add new job',
-        onPressed: () => AddJobPage.show(context),
+        onPressed: () => EditJobPage.show(context),
       ),
     );
-  }
-
-  Future<void> _createJob(BuildContext context) async {
-    try {
-      final database = Provider.of<Database>(context, listen: false);
-      await database.createJob(Job(name: 'Bloging', ratePerHour: 10));
-    } on FirebaseException catch (e) {
-      showExceptionAlertDialog(
-        context,
-        title: 'Operation failed',
-        exception: e,
-      );
-    }
   }
 
   Widget _buildContents(BuildContext context) {
@@ -85,7 +72,7 @@ class JobsPage extends StatelessWidget {
               .map(
                 (job) => JobListTile(
                   job: job,
-                  onTap: () {},
+                  onTap: () => EditJobPage.show(context, job: job),
                 ),
               )
               .toList();

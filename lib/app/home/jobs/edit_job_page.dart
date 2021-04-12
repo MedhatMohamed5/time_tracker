@@ -6,17 +6,20 @@ import 'package:time_tracker/common_widgets/show_alert_dialog.dart';
 import 'package:time_tracker/common_widgets/show_exception_alert_dialog.dart';
 import 'package:time_tracker/services/database.dart';
 
-class AddJobPage extends StatefulWidget {
+class EditJobPage extends StatefulWidget {
   final Database database;
+  final Job job;
 
-  const AddJobPage({Key key, @required this.database}) : super(key: key);
+  const EditJobPage({Key key, @required this.database, this.job})
+      : super(key: key);
 
-  static Future<void> show(BuildContext context) async {
+  static Future<void> show(BuildContext context, {Job job}) async {
     final database = Provider.of<Database>(context, listen: false);
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => AddJobPage(
+        builder: (context) => EditJobPage(
           database: database,
+          job: job,
         ),
         fullscreenDialog: true,
       ),
@@ -24,10 +27,10 @@ class AddJobPage extends StatefulWidget {
   }
 
   @override
-  _AddJobPageState createState() => _AddJobPageState();
+  _EditJobPageState createState() => _EditJobPageState();
 }
 
-class _AddJobPageState extends State<AddJobPage> {
+class _EditJobPageState extends State<EditJobPage> {
   final _formKey = GlobalKey<FormState>();
 
   String _name;
@@ -49,7 +52,7 @@ class _AddJobPageState extends State<AddJobPage> {
         final jobs = await widget.database.jobsStream().first;
         final allNames = jobs.map((job) => job.name).toList();
 
-        if (allNames.contains(_name)) {
+        if (allNames.contains(_name) && widget.job == null) {
           showAlertDialog(
             context,
             title: 'Name is already used',
@@ -57,8 +60,9 @@ class _AddJobPageState extends State<AddJobPage> {
             defaultActionText: 'Ok',
           );
         } else {
-          final job = Job(name: _name, ratePerHour: _ratePerHour);
-          await widget.database.createJob(job);
+          final id = widget.job?.id ?? documentIdFromCurrentDate();
+          final job = Job(id: id, name: _name, ratePerHour: _ratePerHour);
+          await widget.database.setJob(job);
           Navigator.of(context).pop();
         }
       } on FirebaseException catch (e) {
@@ -72,11 +76,20 @@ class _AddJobPageState extends State<AddJobPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.job != null) {
+      _name = widget.job.name;
+      _ratePerHour = widget.job.ratePerHour;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
-        title: Text('New Job'),
+        title: Text(widget.job == null ? 'New Job' : 'Edit Job'),
         centerTitle: true,
         actions: [
           TextButton(
@@ -125,12 +138,14 @@ class _AddJobPageState extends State<AddJobPage> {
   List<Widget> _buildFormChildern() {
     return [
       TextFormField(
+        initialValue: _name,
         decoration: InputDecoration(labelText: 'Job name'),
         textCapitalization: TextCapitalization.sentences,
         onSaved: (value) => _name = value.trim(),
         validator: (value) => value.isNotEmpty ? null : "Name cannot be empty",
       ),
       TextFormField(
+        initialValue: _ratePerHour != null ? '$_ratePerHour' : null,
         decoration: InputDecoration(labelText: 'Rate per hour'),
         onSaved: (value) => _ratePerHour = int.tryParse(value) ?? 0,
         validator: (value) => value.isEmpty
