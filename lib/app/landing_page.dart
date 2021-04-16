@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:time_tracker/services/database.dart';
 import '../services/auth.dart';
 import './sign_in/sign_in_page.dart';
+import 'home/home_page.dart';
 import 'home/jobs/jobs_page.dart';
 
 class LandingPage extends StatelessWidget {
@@ -20,7 +21,7 @@ class LandingPage extends StatelessWidget {
               ? SignInPage.create(context)
               : Provider<Database>(
                   create: (_) => FirestoreDatabase(uid: user.uid),
-                  child: JobsPage(),
+                  child: HomePage(),
                 );
         }
 
