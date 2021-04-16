@@ -3,7 +3,9 @@ import 'package:flutter/foundation.dart';
 
 class FirestoreService {
   FirestoreService._();
+
   static final instance = FirestoreService._();
+
   Future<void> setData({
     @required String path,
     @required Map<String, dynamic> data,
@@ -16,25 +18,43 @@ class FirestoreService {
   Stream<List<T>> collectionStream<T>({
     @required String path,
     @required T Function(Map<String, dynamic> data, String docId) builder,
-    String orderBy,
+    Query Function(Query query) queryBuilder,
+    int Function(T lhs, T rhs) sort,
   }) {
-    final reference = orderBy != null
-        ? FirebaseFirestore.instance.collection(path).orderBy(orderBy)
-        : FirebaseFirestore.instance.collection(path);
-    final snapshots = reference.snapshots();
+    Query query = FirebaseFirestore.instance.collection(path);
 
-    return snapshots.map(
-      (snapshot) => snapshot.docs
-          .map(
-            (snap) => builder(snap.data(), snap.id),
-          )
-          .toList(),
-    );
+    /*final reference = orderBy != null
+        ? FirebaseFirestore.instance.collection(path).orderBy(orderBy)
+        : FirebaseFirestore.instance.collection(path);*/
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+    final snapshots = query.snapshots();
+
+    return snapshots.map((snapshot) {
+      final result = snapshot.docs
+          .map((snapshot) => builder(snapshot.data(), snapshot.id))
+          .where((value) => value != null)
+          .toList();
+      if (sort != null) {
+        result.sort(sort);
+      }
+      return result;
+    });
   }
 
   Future<void> deleteData({@required String path}) async {
     final reference = FirebaseFirestore.instance.doc(path);
     print('delete: $path');
     await reference.delete();
+  }
+
+  Stream<T> documentStream<T>({
+    @required String path,
+    @required T builder(Map<String, dynamic> data, String documentID),
+  }) {
+    final reference = FirebaseFirestore.instance.doc(path);
+    final snapshots = reference.snapshots();
+    return snapshots.map((snapshot) => builder(snapshot.data(), snapshot.id));
   }
 }
