@@ -32,6 +32,11 @@ class JobEntriesPage extends StatelessWidget {
   Future<void> _deleteEntry(BuildContext context, Entry entry) async {
     try {
       await database.deleteEntry(entry);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Item ${entry.comment} deleted'),
+        ),
+      );
     } on FirebaseException catch (e) {
       showExceptionAlertDialog(
         context,
@@ -53,7 +58,11 @@ class JobEntriesPage extends StatelessWidget {
               'Edit',
               style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
-            onPressed: () => EditJobPage.show(context, job: job),
+            style: TextButton.styleFrom(
+              primary: Colors.white,
+            ),
+            onPressed: () =>
+                EditJobPage.show(context, database: database, job: job),
           ),
         ],
       ),
