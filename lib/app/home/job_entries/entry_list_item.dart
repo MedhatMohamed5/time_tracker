@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:time_tracker/app/home/job_entries/format.dart';
+// import 'package:time_tracker/app/home/job_entries/format.dart';
 import 'package:time_tracker/app/home/models/entry.dart';
+import 'package:time_tracker/app/home/models/entry_list_item_model.dart';
 import 'package:time_tracker/app/home/models/job.dart';
 
 class EntryListItem extends StatelessWidget {
@@ -33,34 +34,38 @@ class EntryListItem extends StatelessWidget {
   }
 
   Widget _buildContents(BuildContext context) {
-    final dayOfWeek = Format.dayOfWeek(entry.start);
+    /*final dayOfWeek = Format.dayOfWeek(entry.start);
     final startDate = Format.date(entry.start);
     final startTime = TimeOfDay.fromDateTime(entry.start).format(context);
     final endTime = TimeOfDay.fromDateTime(entry.end).format(context);
     final durationFormatted = Format.hours(entry.durationInHours);
 
     final pay = job.ratePerHour * entry.durationInHours;
-    final payFormatted = Format.currency(pay);
+    final payFormatted = Format.currency(pay);*/
+    final model = EntryListItemModel(entry: entry, job: job);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Row(children: <Widget>[
-          Text(dayOfWeek, style: TextStyle(fontSize: 18.0, color: Colors.grey)),
+          Text(model.dayOfWeek,
+              style: TextStyle(fontSize: 18.0, color: Colors.grey)),
           SizedBox(width: 15.0),
-          Text(startDate, style: TextStyle(fontSize: 18.0)),
+          Text(model.startDate, style: TextStyle(fontSize: 18.0)),
           if (job.ratePerHour > 0.0) ...<Widget>[
             Expanded(child: Container()),
             Text(
-              payFormatted,
+              model.payFormatted,
               style: TextStyle(fontSize: 16.0, color: Colors.green[700]),
             ),
           ],
         ]),
         Row(children: <Widget>[
-          Text('$startTime - $endTime', style: TextStyle(fontSize: 16.0)),
+          Text(
+              '${model.startTime.format(context)} - ${model.endTime.format(context)}',
+              style: TextStyle(fontSize: 16.0)),
           Expanded(child: Container()),
-          Text(durationFormatted, style: TextStyle(fontSize: 16.0)),
+          Text(model.durationFormatted, style: TextStyle(fontSize: 16.0)),
         ]),
         if (entry.comment.isNotEmpty)
           Text(

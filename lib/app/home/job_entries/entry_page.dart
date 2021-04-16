@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:time_tracker/app/home/job_entries/date_time_picker.dart';
+import 'package:time_tracker/common_widgets/date_time_picker.dart';
 import 'package:time_tracker/app/home/job_entries/format.dart';
 import 'package:time_tracker/app/home/models/entry.dart';
 import 'package:time_tracker/app/home/models/job.dart';
