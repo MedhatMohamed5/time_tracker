@@ -22,7 +22,7 @@ class JobEntriesPage extends StatelessWidget {
   static Future<void> show(BuildContext context, Job job) async {
     final database = Provider.of<Database>(context, listen: false);
     await Navigator.of(context).push(
-      MaterialPageRoute(
+      CupertinoPageRoute(
         fullscreenDialog: false,
         builder: (context) => JobEntriesPage(database: database, job: job),
       ),
@@ -49,6 +49,7 @@ class JobEntriesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Job>(
+      initialData: job,
       stream: database.jobStream(jobId: job.id),
       builder: (context, snapshot) {
         final streamJob = snapshot.data;
@@ -58,25 +59,21 @@ class JobEntriesPage extends StatelessWidget {
             elevation: 2.0,
             title: Text(jobName),
             actions: <Widget>[
-              TextButton(
-                child: Text(
-                  'Edit',
-                  style: TextStyle(fontSize: 18.0, color: Colors.white),
-                ),
-                style: TextButton.styleFrom(
-                  primary: Colors.white,
-                ),
+              IconButton(
+                icon: Icon(Icons.edit),
+                tooltip: 'Edit Job',
                 onPressed: () => EditJobPage.show(context,
                     database: database, job: streamJob),
+              ),
+              IconButton(
+                icon: Icon(Icons.add),
+                tooltip: 'Add New Entry',
+                onPressed: () => EntryPage.show(
+                    context: context, database: database, job: streamJob),
               ),
             ],
           ),
           body: _buildContent(context, streamJob),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () => EntryPage.show(
-                context: context, database: database, job: streamJob),
-          ),
         );
       },
     );

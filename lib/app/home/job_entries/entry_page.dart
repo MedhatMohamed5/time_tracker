@@ -17,8 +17,8 @@ class EntryPage extends StatefulWidget {
 
   static Future<void> show(
       {BuildContext context, Database database, Job job, Entry entry}) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(
+    await Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute(
         builder: (context) =>
             EntryPage(database: database, job: job, entry: entry),
         fullscreenDialog: true,
