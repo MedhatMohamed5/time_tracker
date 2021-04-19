@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:rxdart/rxdart.dart';
 import 'package:time_tracker/services/auth.dart';
 
 import './email_sign_in_model.dart';
@@ -8,16 +9,14 @@ class EmailSignInBloc {
   EmailSignInBloc(this.auth);
 
   final AuthBase auth;
+  final _modelSubject =
+      BehaviorSubject<EmailSignInModel>.seeded(EmailSignInModel());
+  Stream<EmailSignInModel> get modelStream => _modelSubject.stream;
 
-  final StreamController<EmailSignInModel> _modelController =
-      StreamController<EmailSignInModel>();
-
-  Stream<EmailSignInModel> get modelStream => _modelController.stream;
-
-  EmailSignInModel _model = EmailSignInModel();
+  EmailSignInModel get _model => _modelSubject.value;
 
   void dispose() {
-    _modelController.close();
+    _modelSubject.close();
   }
 
   void toogleFormType() {
@@ -44,15 +43,13 @@ class EmailSignInBloc {
     bool isLoading,
     bool isSubmitted,
   }) {
-    _model = _model.copyWith(
+    _modelSubject.add(_model.copyWith(
       email: email,
       password: password,
       formType: formType,
       isLoading: isLoading,
       isSubmitted: isSubmitted,
-    );
-
-    _modelController.add(_model);
+    ));
   }
 
   Future<void> submit() async {
