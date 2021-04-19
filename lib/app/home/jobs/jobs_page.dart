@@ -34,7 +34,7 @@ class JobsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(FirebaseAuth.instance.currentUser.uid);
+    print(FirebaseAuth.instance?.currentUser?.uid);
     return Scaffold(
       appBar: AppBar(
         title: Text('Jobs'),
